@@ -69,6 +69,37 @@ const generateId = () => {
   return maxId + 1
 }
 
+app.get('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find(person => person.id === id)
+  if (person) {
+    response.json(person)
+  } else {
+    response.status(404).end()
+  }
+})
+
+app.put('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const body = request.body
+
+  if (!body.number) {
+    return response.status(400).json({ 
+      error: 'number missing' 
+    })
+  }
+
+  const person = {
+    name: body.name,
+    number: body.number,
+    id,
+  }
+
+  persons = persons.map(p => p.id === id ? person : p)
+
+  response.json(person)
+})
+
 app.post('/api/persons', (request, response) => {
   const body = request.body
 
@@ -79,10 +110,6 @@ app.post('/api/persons', (request, response) => {
   } else if (!body.number) {
     return response.status(400).json({ 
       error: 'number missing' 
-    })
-  } else if (persons.map(p => p.name).includes(body.name)) {
-    return response.status(400).json({ 
-      error: `${body.name} already exists in phonebook` 
     })
   }
 
@@ -95,16 +122,6 @@ app.post('/api/persons', (request, response) => {
   persons = persons.concat(person)
 
   response.json(person)
-})
-
-app.get('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  const person = persons.find(person => person.id === id)
-  if (person) {
-    response.json(person)
-  } else {
-    response.status(404).end()
-  }
 })
 
 app.delete('/api/persons/:id', (request, response) => {
