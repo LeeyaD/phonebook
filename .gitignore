@@ -8,3 +8,5 @@ fly.toml
 requests/
 mongo.js
 .env
+.eslintrc.js
+.eslintignore
