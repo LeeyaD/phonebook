@@ -36,8 +36,7 @@ app.get('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.put('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
+app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
 
   if (!body.number) {
@@ -48,13 +47,14 @@ app.put('/api/persons/:id', (request, response) => {
 
   const person = {
     name: body.name,
-    number: body.number,
-    id,
+    number: body.number
   }
 
-  persons = persons.map(p => p.id === id ? person : p)
-
-  response.json(person)
+  Person.findByIdAndUpdate(request.params.id, person, {new: true})
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response) => {
