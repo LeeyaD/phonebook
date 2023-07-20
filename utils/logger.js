@@ -1,4 +1,4 @@
-// great in case we want to write logs to a file or send them to an external logger
+// Use case: writing logs to a file or sending them to an external logger
 const info = (...params) => {
   console.log(...params)
 }

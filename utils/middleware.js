@@ -25,7 +25,7 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
-modules.exports = {
+module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler
