@@ -1,5 +1,6 @@
 // connects app to db and brings in middleware for app to use
 const config = require('./utils/config')
+// imports Express fn that returns an Express app when executed
 const express = require('express')
 const app = express()
 const cors = require('cors')
