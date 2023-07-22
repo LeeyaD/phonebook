@@ -7,19 +7,16 @@ peopleRouter.get('/', async (request, response) => {
   response.json(people)
 })
 
-peopleRouter.get('/:id', (request, response, next) => {
-  Person.findById(request.params.id)
-    .then(person => {
-      if (person) {
-        response.json(person)
-      } else {
-        response.status(404).end()
-      }
-    })
-    .catch(error => next(error))
+peopleRouter.get('/:id', async (request, response, next) => {
+  const person = await Person.findById(request.params.id)
+  if (person) {
+    response.json(person)
+  } else {
+    response.status(404).end()
+  }
 })
 
-peopleRouter.post('/', (request, response, next) => {
+peopleRouter.post('/', async (request, response, next) => {
   const body = request.body
 
   const person = new Person({
@@ -27,19 +24,13 @@ peopleRouter.post('/', (request, response, next) => {
     number: body.number,
   })
 
-  person.save()
-    .then(savedPerson => {
-      response.status(201).json(savedPerson)
-    })
-    .catch(error => next(error))
+  const savedPerson = await person.save()
+  response.status(201).json(savedPerson)
 })
 
-peopleRouter.delete('/:id', (request, response, next) => {
-  Person.findByIdAndRemove(request.params.id)
-    .then(() => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
+peopleRouter.delete('/:id', async (request, response, next) => {
+  await Person.findByIdAndRemove(request.params.id)
+  response.status(204).end()
 })
 
 peopleRouter.put('/:id', (request, response, next) => {
