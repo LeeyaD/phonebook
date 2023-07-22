@@ -2,10 +2,9 @@
 const peopleRouter = require('express').Router()
 const Person = require('../models/person')
 
-peopleRouter.get('/', (request, response) => {
-  Person.find({}).then(persons => {
-    response.json(persons)
-  })
+peopleRouter.get('/', async (request, response) => {
+  const people = await Person.find({})
+  response.json(people)
 })
 
 peopleRouter.get('/:id', (request, response, next) => {
@@ -30,7 +29,7 @@ peopleRouter.post('/', (request, response, next) => {
 
   person.save()
     .then(savedPerson => {
-      response.json(savedPerson)
+      response.status(201).json(savedPerson)
     })
     .catch(error => next(error))
 })
