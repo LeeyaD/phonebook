@@ -12,11 +12,13 @@ const initialPeople = [
 ]
 
 const nonExistingId = async () => {
-  const person = new Person({ name: 'willremovethissoon' })
+  const person = new Person({ 
+    name: 'willremovethissoon', 
+    number: '123-56787'
+  })
   await person.save()
   await person.deleteOne()
-
-  return person._id.toString()
+  return person.id.toString()
 }
 
 const peopleInDb = async () => {
