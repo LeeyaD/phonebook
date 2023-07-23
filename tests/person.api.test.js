@@ -6,7 +6,6 @@ const app = require('../app')
 const api = supertest(app)
 
 const Person = require('../models/person')
-// mongoose.set("bufferTimeoutMS", 30000)
 
 beforeEach(async () => {
   await Person.deleteMany({})
