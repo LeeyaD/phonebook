@@ -16,6 +16,10 @@ const personSchema = new mongoose.Schema({
         return /^\d{2,3}-\d{5,}$/.test(n)
       }
     }
+  },
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User'
   }
 })
 
