@@ -44,19 +44,6 @@ peopleRouter.post('/', async (request, response, next) => {
 })
 
 peopleRouter.delete('/:id', async (request, response) => {
-  /*
-  - similar to POST, a token will be attached to request
-    - decodeToken
-    - ensure it's valid
-    - find User assoc. w/ token
-  - find user assoc/ with contact
-    - capture contact's 'user' prop, convert it to a str
-  - verify both token user & contact creator are the same
-    - if so, delete contact
-    - otherwise, return appropriate status code
-      - invalid token
-      - invalid user
-  */
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
 
   if (!decodedToken.id) {
