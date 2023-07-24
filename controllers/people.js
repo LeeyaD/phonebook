@@ -1,9 +1,13 @@
 // this file contains our route handlers
+const jwt = require('jsonwebtoken')
 const peopleRouter = require('express').Router()
 const Person = require('../models/person')
+const User = require('../models/user')
+const middleware = require('../utils/middleware')
 
 peopleRouter.get('/', async (request, response) => {
-  const people = await Person.find({})
+  const people = await Person
+    .find({}).populate('user', { username: 1, name: 1 })
   response.json(people)
 })
 
@@ -19,12 +23,22 @@ peopleRouter.get('/:id', async (request, response, next) => {
 peopleRouter.post('/', async (request, response, next) => {
   const body = request.body
 
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
+
   const person = new Person({
     name: body.name,
     number: body.number,
+    user: user.id
   })
 
   const savedPerson = await person.save()
+  user.contacts = user.contacts.concat(savedPerson._id)
+  await user.save()
+
   response.status(201).json(savedPerson)
 })
 
