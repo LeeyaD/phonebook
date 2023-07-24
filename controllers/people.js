@@ -23,6 +23,7 @@ peopleRouter.get('/:id', async (request, response, next) => {
 peopleRouter.post('/', async (request, response, next) => {
   const body = request.body
 
+  console.log(request.token)
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })

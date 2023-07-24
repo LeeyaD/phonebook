@@ -33,8 +33,8 @@ const errorHandler = (error, request, response, next) => {
 
 const tokenExtractor = (req, res, next) => {
   const authorization = req.get('authorization')
-  if (authorization && authorization.startsWith('bearer ')) {
-    req['token'] = authorization.replace('bearer ', '')
+  if (authorization && authorization.startsWith('Bearer ')) {
+    req['token'] = authorization.replace('Bearer ', '')
   }
   
   next()
