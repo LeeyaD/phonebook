@@ -43,9 +43,34 @@ peopleRouter.post('/', async (request, response, next) => {
   response.status(201).json(savedPerson)
 })
 
-peopleRouter.delete('/:id', async (request, response, next) => {
-  await Person.findByIdAndRemove(request.params.id)
-  response.status(204).end()
+peopleRouter.delete('/:id', async (request, response) => {
+  /*
+  - similar to POST, a token will be attached to request
+    - decodeToken
+    - ensure it's valid
+    - find User assoc. w/ token
+  - find user assoc/ with contact
+    - capture contact's 'user' prop, convert it to a str
+  - verify both token user & contact creator are the same
+    - if so, delete contact
+    - otherwise, return appropriate status code
+      - invalid token
+      - invalid user
+  */
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
+  }
+  const tokenUser = await User.findById(decodedToken.id)
+  const person = await Person.findById(request.params.id)
+  
+  if (tokenUser._id.toString() === person.user.toString()) {
+    await Person.findByIdAndRemove(request.params.id)
+    response.status(204).end()
+  } else {
+    response.status(401).json({ error: 'user not authorized to delete contact' })
+  }
 })
 
 peopleRouter.put('/:id', async (request, response, next) => {
