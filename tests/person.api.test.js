@@ -9,6 +9,7 @@ const api = supertest(app)
 const Person = require('../models/person')
 const User = require('../models/user')
 
+
 describe('when there are initially some people saved', () => {
   beforeEach(async () => {
     await Person.deleteMany({})
