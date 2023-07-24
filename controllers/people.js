@@ -24,7 +24,7 @@ peopleRouter.post('/', async (request, response, next) => {
   const body = request.body
 
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  
+
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })
   }
@@ -48,18 +48,16 @@ peopleRouter.delete('/:id', async (request, response, next) => {
   response.status(204).end()
 })
 
-peopleRouter.put('/:id', (request, response, next) => {
+peopleRouter.put('/:id', async (request, response, next) => {
   const { name, number } = request.body
 
-  Person.findByIdAndUpdate(
+  const updatedPerson = await Person.findByIdAndUpdate(
     request.params.id,
     { name, number },
     { new: true, runValidators: true, context: 'query' }
   )
-    .then(updatedPerson => {
-      response.json(updatedPerson)
-    })
-    .catch(error => next(error))
+
+  response.json(updatedPerson)
 })
 
 module.exports = peopleRouter
