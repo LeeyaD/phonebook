@@ -30,9 +30,10 @@ app.use(express.json())
 app.use(middleware.requestLogger)
 // router object is middleware, here it's only used IF the path starts w/ '/api/persons'
 app.use(middleware.tokenExtractor)
+// app.use(middleware.userExtractor)
 app.use('/api/login', loginRouter)
 app.use('/api/users', usersRouter)
-app.use('/api/persons', peopleRouter)
+app.use('/api/persons', middleware.userExtractor, peopleRouter)
 
 
 app.use(middleware.unknownEndpoint)

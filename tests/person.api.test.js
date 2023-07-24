@@ -76,14 +76,11 @@ describe('when there are initially some people saved', () => {
     test('succeeds with valid data', async () => {
       const newPerson = {
         name: 'Dawson Creek',
-        number: '05-98765'
+        number: '053-98765'
       }
-
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlJveUJveUNveSIsImlkIjoiNjRiZDM3NzU2ZTNiYzg4MWEyZTc0ZDE1IiwiaWF0IjoxNjkwMTQxNjU0fQ.CMGsrNsChAZriS1bayLag_hPa5uVPflfK99HismIeXk'
 
       await api
         .post('/api/persons')
-        .set('Authorization', `Bearer ${token}`)
         .send(newPerson)
         .expect(201)
         .expect('Content-Type', /application\/json/)

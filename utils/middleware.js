@@ -1,5 +1,7 @@
 // custom middleware
 const logger = require('./logger')
+const jwt = require('jsonwebtoken')
+const User = require('../models/user')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -40,9 +42,25 @@ const tokenExtractor = (req, res, next) => {
   next()
 }
 
+const userExtractor = async (req, res, next) => {
+  const methods = ['POST', 'DELETE']
+  if (methods.includes(req.method)) {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
+    
+    if (!decodedToken.id) {
+      return res.status(401).json({ error: 'token invalid' })
+    }
+    
+    req['user'] = await User.findById(decodedToken.id)
+  }
+
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
   errorHandler,
-  tokenExtractor
+  tokenExtractor,
+  userExtractor
 }

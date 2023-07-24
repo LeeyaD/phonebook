@@ -22,37 +22,26 @@ peopleRouter.get('/:id', async (request, response, next) => {
 
 peopleRouter.post('/', async (request, response, next) => {
   const body = request.body
-
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-  const user = await User.findById(decodedToken.id)
+  const user = request.user
 
   const person = new Person({
     name: body.name,
     number: body.number,
-    user: user.id
+    user: user.toJSON().id
   })
 
   const savedPerson = await person.save()
-  user.contacts = user.contacts.concat(savedPerson._id)
+  user.toJSON().contacts = user.toJSON().contacts.concat(savedPerson._id)
   await user.save()
 
   response.status(201).json(savedPerson)
 })
 
 peopleRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: 'token invalid' })
-  }
-  const tokenUser = await User.findById(decodedToken.id)
   const person = await Person.findById(request.params.id)
-  
-  if (tokenUser._id.toString() === person.user.toString()) {
+  const user = request.user.toJSON()
+
+  if (user.id === person.user.toString()) {
     await Person.findByIdAndRemove(request.params.id)
     response.status(204).end()
   } else {
