@@ -9,11 +9,11 @@ const personSchema = new mongoose.Schema({
   },
   number: {
     type: String,
-    minLength: 7,
+    minLength: 6,
     required: true,
     validate: {
       validator(n) {
-        return /^\d{2,3}-\d{5,}$/.test(n)
+        return /^\d{2,3}-\d{4,}$/.test(n)
       }
     }
   },
